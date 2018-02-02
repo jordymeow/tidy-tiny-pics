@@ -1,0 +1,66 @@
+﻿<Window x:Class="Meow.FR.TidyTinyPics.WndMain"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Themes="clr-namespace:WPF.Themes;assembly=WPF.Themes"
+    Themes:ThemeManager.Theme="ExpressionDark"
+    Background="{DynamicResource WindowBackgroundBrush}"
+    Title="TidyTinyPics (http://tidytinypics.codeplex.com)" Height="500" Width="700" Icon="/TidyTinyPics;component/Balloon.ico">
+    <Window.Resources>
+        <DataTemplate x:Key="activeZone">
+            <DockPanel LastChildFill="True" Background="Black">
+                <ListView Name="lstFiles" DockPanel.Dock="Left" ItemsSource="{Binding Path=Files, Mode=OneWay}" Drop="ListView_Drop" DragEnter="ListView_DragEnter" AllowDrop="True" Margin="4" SelectionChanged="lstFiles_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Width="150" Header="Files" DisplayMemberBinding="{Binding Path=Name}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Image Source="{Binding Path=CurrentImage, Mode=OneWay}" DragEnter="ListView_DragEnter" Drop="ListView_Drop" VerticalAlignment="Center" HorizontalAlignment="Center" AllowDrop="True" Margin="4">
+                </Image>
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=IsRunning}" Value="True">
+                    <Setter TargetName="lstFiles" Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Window.Resources>
+    <DockPanel Name="dckMain" LastChildFill="True">
+        <Grid DockPanel.Dock="Top" Height="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="4" Foreground="White">Max Edge Size:</TextBlock>
+            <TextBox Grid.Column="1" VerticalAlignment="Center" Margin="4" Width="40" Text="{Binding Path=MaxEdgeSize}"></TextBox>
+            <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="4" Foreground="White">Quality:</TextBlock>
+            <TextBox Grid.Column="3" VerticalAlignment="Center" Margin="4" Width="25" Text="{Binding Path=Quality}"></TextBox>
+            <TextBlock Grid.Column="4" VerticalAlignment="Center" Margin="4" Foreground="White">Rename files</TextBlock>
+            <CheckBox Grid.Column="5" VerticalAlignment="Center" Margin="4" Width="25" IsChecked="{Binding Path=RenameFiles}"></CheckBox>
+            <TextBlock Grid.Column="6" VerticalAlignment="Center" Margin="4" Foreground="White">Progress:</TextBlock>
+            <ProgressBar Grid.Column="7" Margin="4" Value="{Binding Path=Processed, Mode=OneWay}" Maximum="{Binding Path=Count, Mode=OneWay}"></ProgressBar>
+        </Grid>
+        <Grid Background="#1F1F1F" DockPanel.Dock="Bottom" MinHeight="40" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="4*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Click="btnReset_Click" Margin="4">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,4,0" RenderOptions.BitmapScalingMode="NearestNeighbor" Height="16" Width="16" Source="Resources/arrow_refresh.png" />
+                    <TextBlock>Reset list</TextBlock></StackPanel></Button>
+            <Button Grid.Column="1" Click="btnStart_Click" Margin="4">
+                <StackPanel Orientation="Horizontal">
+                    <Image Margin="0,0,4,0" RenderOptions.BitmapScalingMode="NearestNeighbor" Height="16" Width="16" Source="Resources/resultset_next.png" />
+                    <TextBlock>Rename &amp; Resize !</TextBlock>
+                </StackPanel></Button>
+        </Grid>
+        <TextBlock Foreground="White" DockPanel.Dock="Bottom" TextWrapping="WrapWithOverflow" Margin="5">Drag and drop the directories and / or JPEG image files in the Files box. Choose the right resolution and quality (default settings should be enough in most cases). Then click the Rename &amp; Resize! Job's done!</TextBlock>
+        <ContentControl Content="{Binding}" Background="Black" ContentTemplate="{StaticResource activeZone}" />
+    </DockPanel>
+</Window>
